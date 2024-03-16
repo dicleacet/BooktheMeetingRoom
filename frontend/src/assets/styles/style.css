@@ -1,0 +1,20 @@
+@import "./buttton.css";
+@import "./card.css";
+
+.home{
+    width: 100%;
+    height: 100vh;
+}
+
+.home .container{
+    
+    padding: 0 10%;
+
+}
+
+.home .container .content{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+    padding: 20px;
+}
