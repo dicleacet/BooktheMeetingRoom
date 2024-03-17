@@ -4,13 +4,15 @@ from booking import serializers
 from rest_framework.views import APIView
 from booking.models import BookingRoom
 from datetime import datetime
-from app.helper import admin_only
+from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema
 
 class AvailableRooms(APIView):
     serializer_class = serializers.BookingSerializer
     authentication_classes = []
     permission_classes = [AllowAny]
 
+    @extend_schema(tags=['Booking - Public'])
     def get(self, request):
         number_of_people = request.GET.get('numberOfPeople')
         start_date = request.GET.get('startDate')
@@ -27,6 +29,7 @@ class BookRoom(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
 
+    @extend_schema(tags=['Booking - Public'])
     def post(self, request):
         data = request.data
         serializer = serializers.BookRoomSerializer(data=data)
@@ -35,14 +38,14 @@ class BookRoom(APIView):
         return Response(serializer.data, status=200)
 
 
-class AddRoom(APIView):
-    authentication_classes = []
-    permission_classes = [AllowAny]
-
-    @admin_only
-    def post(self, request):
-        data = request.data
-        serializer = serializers.BookingSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=200)
+# class AddRoom(APIView):
+#     authentication_classes = []
+#     permission_classes = [AllowAny]
+#
+#     @admin_only
+#     def post(self, request):
+#         data = request.data
+#         serializer = serializers.BookingSerializer(data=data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=200)

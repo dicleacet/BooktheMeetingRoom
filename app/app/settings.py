@@ -13,24 +13,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 import environ
-from django.utils.translation import gettext_lazy as _
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
-    # set casting, default value
     DEBUG=(bool, False)
 )
 
 environ.Env.read_env(BASE_DIR / '.env')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', False)
 
 if DEBUG:
@@ -43,9 +35,9 @@ else:
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = ()
+    CORS_ALLOWED_ORIGINS = ('http://localhost:3000',)
 
-# Application definition
+CORS_URLS_REGEX = r'^/api/.*$'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -58,11 +50,15 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',
     'corsheaders',
+    'admin_auto_filters',
+    'django_cleanup',
+    'django_filters',
 
     # apps
+    'accounts',
     'booking',
-
 ]
 
 MIDDLEWARE = [
@@ -78,10 +74,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'app.urls'
 
+AUTH_USER_MODEL = 'accounts.User'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -139,8 +137,11 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
+LOGOUT_REDIRECT_URL = 'admin:login'
+LOGIN_URL = 'admin:login'
+
+LOCALE_PATHS = (BASE_DIR / 'locales',)
+
 
 STATICFILES_DIRS = [
     BASE_DIR / 'assets',
@@ -155,6 +156,23 @@ MEDIA_URL = 'media/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'BOOKING API',
+    'DESCRIPTION': 'BOOKING Endpoints',
+    'VERSION': '1.0.0',
+    'DISABLE_ERRORS_AND_WARNINGS': True,
+    'CONTACT': {
+        'email': 'dicleacet@outlook.com'
+    },
+    'CAMELIZE_NAMES': False,
+    "SWAGGER_UI_SETTINGS": {
+            "deepLinking": True,
+            "persistAuthorization": True,
+            "displayOperationId": False,
+            "docExpansion": 'none'
+        },
+}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=180),
@@ -179,4 +197,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'app.helpers.StandardResultsSetPagination',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'PAGE_SIZE': 20
 }

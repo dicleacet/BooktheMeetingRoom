@@ -15,11 +15,26 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import HttpResponse
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+
+def home_page(request):
+    return HttpResponse('BOOKING API 1.0')
+
 
 urlpatterns = [
+    path('', home_page, name='home'),
+
     path('api/', include('booking.urls')),
-    path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+
+    path('mgmt/', admin.site.urls),
+    path('api/schema/', login_required(SpectacularAPIView.as_view()), name='schema'),
+    path('swagger/', login_required(SpectacularSwaggerView.as_view(url_name='schema')), name='swagger-ui'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
