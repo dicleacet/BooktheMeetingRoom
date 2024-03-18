@@ -10,9 +10,9 @@ class BookingSerializer(serializers.ModelSerializer):
 
 
 class BookRoomSerializer(serializers.Serializer):
-    between = serializers.ListField(child=serializers.DateTimeField())
     roomId = serializers.IntegerField()
     numberOfPeople = serializers.IntegerField()
+    between = serializers.ListField(child=serializers.DateTimeField())
 
     def validate(self, data):
         start_date = data['between'][0]

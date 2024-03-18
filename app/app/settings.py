@@ -26,16 +26,16 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', False)
 
 if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1']
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
     CORS_ALLOW_ALL_ORIGINS = True
-    CORS_ALLOWED_ORIGINS = ('http://localhost:3000', 'http://localhost:8080')
+    CORS_ALLOWED_ORIGINS = ('http://localhost:3000', )
 else:
-    ALLOWED_HOSTS = ['127.0.0.1']
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    ALLOWED_HOSTS = ['127.0.0.1',]
+#    SESSION_COOKIE_SECURE = True
+#    CSRF_COOKIE_SECURE = True
+#    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = ('http://localhost:3000',)
+    # CORS_ALLOWED_ORIGINS = ('',)
 
 CORS_URLS_REGEX = r'^/api/.*$'
 
