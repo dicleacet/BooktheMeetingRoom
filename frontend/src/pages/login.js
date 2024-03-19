@@ -1,19 +1,22 @@
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../slices/authSlice";
+import { getUserData, login } from "../slices/authSlice";
 import { Container, Row } from "react-bootstrap";
 import { useEffect } from "react";
 
 const LoginPage = () => {
+    const user = useSelector((state) => state.auth.user);
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
+
     useEffect(() => {
         if (localStorage.getItem("user")) {
-            navigate("/home");
+            dispatch(login(JSON.parse(localStorage.getItem("user"))));
         }
     }, []);
+
     const handleLogin = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -23,32 +26,53 @@ const LoginPage = () => {
         };
         axios.post("/accounts/login/", data).then((response) => {
             localStorage.setItem("user", JSON.stringify(response.data));
-            dispatch(login(response.data));
+            
+
+            // dispatch(login({
+            //     ...response.data,
+            //     "id": 1,
+            //     "first_name": null,
+            //     "last_name": null,
+            //     "username": "dicle",
+            //     "email": null,
+            //     "user_permission": "superuser"
+            // }));
+
+            axios.get("/accounts/get-data/",{
+                headers: {
+                    Authorization: `Bearer ${response.data.access}`
+                }
+            }).then((response) => {
+                console.log(response.data);
+                // dispatch(a);
+            });
+
             navigate("/home");
         })
         .catch((error) => {
             console.log(error);
         });
     }
-    return (
-        // <div>
-        // <form onSubmit={handleLogin}>   
-        //     <div>
-        //         <label htmlFor="text">Email</label>
-        //         <input type="text" name="username" id="text" />
-        //     </div>
-        //     <div>
-        //         <label htmlFor="password">Password</label>
-        //         <input type="password" name="password" id="password" />
-        //     </div>
-        //     <div>
-        //         <button type="submit">Login</button>
-        //     </div>
-        // </form>
-        // </div>
 
+    useEffect(() => {
+        if (user) {
+            switch (user.user_permission) {
+                case "superuser":
+                    navigate("/admin");
+                    break;
+                case "manager":
+                    navigate("/admin");
+                    break;
+            
+                default:
+                    navigate("/home");
+                    break;
+            }
+        }
+    }, [user]);
+    return (
         <Container>
-            <Row style={{height:"100vh"}} className="justify-content-center align-items-center">
+            <Row style={{height:"100vh",overflowX:"hidden"}} className="justify-content-center align-items-center">
                 <div className="login-form">
                     <h2>Login</h2>
                     <form onSubmit={handleLogin}>

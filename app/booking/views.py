@@ -54,14 +54,14 @@ class BookRoom(APIView):
 
 
 @extend_schema_view(
-    list=extend_schema(tags=['Booking - Manager'], description='ordering: id, last_login'),
+    list=extend_schema(tags=['Booking - Manager']),
     create=extend_schema(tags=['Booking - Manager']),
     retrieve=extend_schema(tags=['Booking - Manager']),
     update=extend_schema(tags=['Booking - Manager']),
     partial_update=extend_schema(tags=['Booking - Manager']),
     destroy=extend_schema(tags=['Booking - Manager']),
 )
-class BookingRoomViewSet(DestroyModelMixin, ModelViewSet):
+class BookingRoomViewSet(ModelViewSet):
     queryset = BookingRoom.objects.all()
     serializer_class = serializers.BookingSerializer
     permission_classes = (IsAuthenticated, IsManager)
@@ -72,7 +72,7 @@ class BookingRoomViewSet(DestroyModelMixin, ModelViewSet):
         'id', 'start_date'
     )
 
-    def get_serializer_class(self):
-        if self.request.method not in ['GET']:
-            self.serializer_class = serializers.BookRoomSerializer
-        return self.serializer_class
+    # def get_serializer_class(self):
+    #     if self.request.method not in ['GET']:
+    #         self.serializer_class = serializers.BookRoomSerializer
+    #     return self.serializer_class

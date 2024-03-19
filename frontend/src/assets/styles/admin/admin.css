@@ -1,0 +1,13 @@
+body {
+    padding: 1em;
+}
+.form-control {
+    display: inline-block;
+    max-width: 80%;
+}
+.react-table-container button {
+    margin-bottom: 0.5em;
+}
+.react-table td button {
+    margin-left: 1em;
+}

@@ -17,6 +17,8 @@ if DEBUG:
     ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
     CORS_ALLOW_ALL_ORIGINS = True
     CORS_ALLOWED_ORIGINS = ('http://localhost:3000', )
+    CORS_ALLOW_HEADERS = '*'
+    CSRF_TRUSTED_ORIGINS = ["http://localhost:8000/",]
 else:
     ALLOWED_HOSTS = ['127.0.0.1',]
 #    SESSION_COOKIE_SECURE = True
@@ -37,9 +39,9 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
+    'corsheaders',
     'rest_framework_simplejwt',
     'drf_spectacular',
-    'corsheaders',
     'admin_auto_filters',
     'django_cleanup',
     'django_filters',
