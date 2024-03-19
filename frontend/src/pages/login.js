@@ -26,17 +26,6 @@ const LoginPage = () => {
         };
         axios.post("/accounts/login/", data).then((response) => {
             localStorage.setItem("user", JSON.stringify(response.data));
-            
-
-            // dispatch(login({
-            //     ...response.data,
-            //     "id": 1,
-            //     "first_name": null,
-            //     "last_name": null,
-            //     "username": "dicle",
-            //     "email": null,
-            //     "user_permission": "superuser"
-            // }));
 
             axios.get("/accounts/get-data/",{
                 headers: {

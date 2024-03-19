@@ -27,7 +27,6 @@ else:
     CORS_ALLOW_ALL_ORIGINS = False
     # CORS_ALLOWED_ORIGINS = ('',)
 
-CORS_URLS_REGEX = r'^/api/.*$'
 
 INSTALLED_APPS = [
     'django.contrib.admin',

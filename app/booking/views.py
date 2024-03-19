@@ -2,7 +2,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 from accounts.permissions import IsManager, IsMember
 from rest_framework.response import Response
-from app.helpers import DestroyModelMixin
 from booking import serializers
 from rest_framework.views import APIView
 from booking.models import BookingRoom
@@ -71,8 +70,3 @@ class BookingRoomViewSet(ModelViewSet):
     ordering_fields = (
         'id', 'start_date'
     )
-
-    # def get_serializer_class(self):
-    #     if self.request.method not in ['GET']:
-    #         self.serializer_class = serializers.BookRoomSerializer
-    #     return self.serializer_class
