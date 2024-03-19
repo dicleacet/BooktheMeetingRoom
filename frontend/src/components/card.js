@@ -1,27 +1,27 @@
 const card = (props) => {
     return (
-        <div class="card">
-            <div class="card-image--container">
-                <img src="https://test-fontend-dev.s3-us-west-2.amazonaws.com/photo.jpg" alt="forest image" class="card-image"/>
-                <div class="card-image--label">
+        <div className="card">
+            <div className="card-image--container">
+                <img src="https://test-fontend-dev.s3-us-west-2.amazonaws.com/photo.jpg" alt="forest image" className="card-image"/>
+                <div className="card-image--label">
                     Number of Members : {props?.peopleLength} 
                 </div>
             </div>
-            <div class="card-body">
-                <div class="card-body--subheader">
+            <div className="card-body">
+                <div className="card-body--subheader">
                     {props?.timestamp}
                 </div>
-                <div class="card-body--header">
-                    John Doe
+                <div className="card-body--header">
+                    {props?.name}
                 </div>
-                <div class="card-body--text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                <div className="card-body--text">
+                    {props?.description}
                 </div>
             </div>
-            <hr class="card-divider" />
-            <div class="card-footer">
-                <div class="card-footer--button">
-                    <span class='card-footer--text'>
+            <hr className="card-divider" />
+            <div className="card-footer">
+                <div className="card-footer--button" onClick={props.onClick} >
+                    <span className='card-footer--text'>
                         Join Now
                     </span>
                 </div>

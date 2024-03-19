@@ -18,3 +18,8 @@
     grid-gap: 20px;
     padding: 20px;
 }
+
+.login-form{
+    min-width: 400px !important;
+    width: 50% !important;
+}
