@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import ButtonComponent from "../components/Button";
-import Card from "../components/card";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Col, Container, Form, FormLabel, Modal, Row } from "react-bootstrap";
-import ReactDatePicker from "react-datepicker";
 import * as Yup from "yup";
 import { toast } from 'react-toastify';
 import logo from "../assets/images/logo.png";
+import CardComponent from "../components/card";
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -17,7 +15,6 @@ const Home = () => {
     const [rooms, setRooms] = useState([]);
     const [show, setShow] = useState(false);
     const [room, setRoom] = useState(null);
-    
     
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -27,8 +24,7 @@ const Home = () => {
     useEffect(() => {
         if (localStorage.getItem("user")) {
             dispatch(login(JSON.parse(localStorage.getItem("user"))));
-        }
-        else {
+        } else {
             dispatch(logout());
             navigate("/login");
         }
@@ -40,18 +36,16 @@ const Home = () => {
         }
     }, [user]);
 
-    useEffect(()=>{
-        //ilk başta çalışan burası tümü apisini yazınca endpoint değiştir
-        // axios.get(`/api/availablerooms/?numberOfPeople=${31}&startDate=${"2024-03-18 19:00:00"}&endDate=${"2024-03-18 23:50:00"}`)
-        axios.get(`/api/getallrooms/`)
-        .then((res)=>{
-            console.log(res.data);
-            setRooms(res.data.rooms);
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
-    },[])
+    useEffect(() => {
+        axios
+            .get(`/api/getallrooms/`)
+            .then((res) => {
+                setRooms(res.data.rooms);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
 
     const logoutFunction = () => {
         dispatch(logout());
@@ -69,7 +63,7 @@ const Home = () => {
 
         let dateTimePattern = /^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
         
-        let shcema = {
+        let schema = {
             numberOfPeople: Yup.number().typeError("Number Of People Must be a number!").required('Number Of People is required'),
             startDate: Yup.string().required('Start Date is required').matches(dateTimePattern, 'Start Date is not valid'),
             endDate: Yup.string().required('End Date is required').matches(dateTimePattern, 'End Date is not valid')    
@@ -80,14 +74,16 @@ const Home = () => {
             startDate: formatDateForReq(data.get("startDate")),
             endDate: formatDateForReq(data.get("endDate")),
         }
-        const validation = Yup.object().shape(shcema);
+
+        const validation = Yup.object().shape(schema);
 
         let control = validation.validate(validationData).then((res) => {
         }).catch((err) => {
             toast.error(err.message);
             return false
         })
-        if(!control){
+
+        if (!control) {
             return;
         }
 
@@ -111,22 +107,19 @@ const Home = () => {
 
         let dateTimePattern = /^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
 
-
-        let shcema = {
+        let schema = {
             numberOfPeople: Yup.number().typeError("Number Of People Must be a number!").required('Number Of People is required'),
             startDate: Yup.string().required('Start Date is required').matches(dateTimePattern, 'Start Date is not valid'),
             endDate: Yup.string().required('End Date is required').matches(dateTimePattern, 'End Date is not valid')    
         }
-
-
 
         let validationData = {
             numberOfPeople: data.get("numberOfPeople"),
             startDate: formatDateForReq(data.get("startDate")),
             endDate: formatDateForReq(data.get("endDate")),
         }
-        const validation = Yup.object().shape(shcema);
-            console.log(validationData);
+
+        const validation = Yup.object().shape(schema);
 
         let control = validation.validate(validationData).then((res) => {
             console.log(validationData);
@@ -134,11 +127,12 @@ const Home = () => {
             toast.error(err.message);
             return false
         })
-        if(!control){
+
+        if (!control) {
             return;
         }
 
-        axios.post(`/api/bookroom/`,{
+        axios.post(`/api/bookroom/`, {
             numberOfPeople: numberOfPeople,
             between:[
                 startDate,
@@ -161,7 +155,7 @@ const Home = () => {
             console.log(err);
         })
     }
-    
+
     const goHome = () => {
         axios.get(`/api/getallrooms/`)
         .then((res)=>{
@@ -182,6 +176,7 @@ const Home = () => {
         const second = d.getSeconds();
         return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
     }
+
     const formatDateForReq = (date) => {
         const d = new Date(date);
         const year = d.getFullYear();
@@ -193,7 +188,6 @@ const Home = () => {
         return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
     }
 
-
     return (
         <Container fluid className="px-5">
             <Row className="mt-3">
@@ -203,14 +197,14 @@ const Home = () => {
                 <Col md={6}>
                     <Form className="d-flex justify-content-center gap-3" onSubmit={searchForRooms}>
                         <Form.Group className="mb-3">
-                            <Form.Control type="number" placeholder="numberOfPeople" name="numberOfPeople"/>
+                            <Form.Control type="number" placeholder="Number of People" name="numberOfPeople"/>
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Control type="datetime-local" placeholder="startDate" name="startDate" />
+                            <Form.Control type="datetime-local" name="startDate" />
                         </Form.Group>
                         -
                         <Form.Group className="mb-3">
-                            <Form.Control type="datetime-local" placeholder="endDate" name="endDate" />
+                            <Form.Control type="datetime-local" name="endDate" />
                         </Form.Group>
 
                         <Button type="submit" style={{height:"fit-content"}}>
@@ -228,20 +222,20 @@ const Home = () => {
             
             <Container className="mt-3">
                 <Row>
-                    
-                    {
-                        rooms?.map((room, index) => {
-                            return (
-                            <Col key={index} md={3}>
-                                <Card peopleLength={room.max_people} name={room.name} description={room.description} 
-                                timestamp={`${formatDate(room.start_date)} - ${formatDate(room.end_date)}`} onClick={()=>{
+                    {rooms.map((room, index) => (
+                        <Col key={index} md={3} className="mb-3">
+                            <CardComponent
+                                peopleLength={room.max_people}
+                                name={room.name}
+                                description={room.description ? room.description : "No Description"}
+                                timestamp={`${formatDate(room.start_date)} - ${formatDate(room.end_date)}`}
+                                onClick={() => {
                                     setRoom(room);
                                     handleShow();
-                                }} />
-                            </Col>
-                            )
-                        })
-                    }
+                                }}
+                            />
+                        </Col>
+                    ))}
                 </Row>
             </Container>
 
@@ -276,3 +270,4 @@ const Home = () => {
 };
 
 export default Home;
+

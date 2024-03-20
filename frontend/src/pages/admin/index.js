@@ -105,6 +105,8 @@ const Admin = () => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = {
+            name: formData.get("name"),
+            description: formData.get("description"),
             numberOfPeople: formData.get("numberOfPeople"),
             startDate: formatDateForReq(formData.get("startDate")),
             endDate: formatDateForReq(formData.get("endDate")),
@@ -114,6 +116,8 @@ const Admin = () => {
 
 
         let shcema = {
+            name: Yup.string().required('Name is required'),
+            description: Yup.string().required('Description is required'),
             numberOfPeople: Yup.number().typeError("Number Of People Must be a number!").required('Number Of People is required'),
             startDate: Yup.string().required('Start Date is required').matches(dateTimePattern, 'Start Date is not valid'),
             endDate: Yup.string().required('End Date is required').matches(dateTimePattern, 'End Date is not valid')
@@ -136,6 +140,8 @@ const Admin = () => {
 
         axios.post("/api/bookings/", {
             name: "Room",
+            name: data.name,
+            description: data.description,
             max_people: data.numberOfPeople,
             start_date: data.startDate,
             end_date: data.endDate,
@@ -211,6 +217,9 @@ const Admin = () => {
             });
     }
 
+    useEffect(() => {
+        document.title = "Control Panel";
+    }, []);
 
     const formatForDefaultValue = (date) => {
         if (!date) return ''; // Eğer tarih yoksa boş bir string döndür
@@ -279,6 +288,14 @@ const Admin = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form className="d-flex flex-column justify-content-center gap-3" onSubmit={addRoom}>
+                        <Form.Group className="mb-3">
+                            <FormLabel>Name</FormLabel>
+                            <Form.Control type="text" placeholder="name" name="name" />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <FormLabel>Description</FormLabel>
+                            <Form.Control type="text" placeholder="description" name="description" />
+                        </Form.Group>
                         <Form.Group className="mb-3">
                             <FormLabel>Number of People</FormLabel>
                             <Form.Control type="number" placeholder="numberOfPeople" name="numberOfPeople" />

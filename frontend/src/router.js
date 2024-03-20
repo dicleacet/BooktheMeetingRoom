@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {
     createBrowserRouter, useNavigate,
   } from "react-router-dom";
-import {Home,LoginPage} from './pages/index';
+import {Home,LoginPage,RegisterPage} from './pages/index';
 import Admin from './pages/admin';
 
 
@@ -14,7 +14,6 @@ const RedirectToLogin = () => {
     return <></>
 }
 
-const El = ()=><div>head</div>
 
 const router = createBrowserRouter(
   [
@@ -33,6 +32,10 @@ const router = createBrowserRouter(
     {
         path: "/login",
         element: <LoginPage />,
+    },
+    {
+        path: "/register",
+        element: <RegisterPage />,
     },
   ]
   );
