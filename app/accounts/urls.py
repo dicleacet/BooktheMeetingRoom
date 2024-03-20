@@ -16,7 +16,6 @@ urlpatterns = [
     path('login/refresh/', views.UserTokenRefreshView.as_view(), name='login_refresh'),
     path("register/", views.UserRegistrationView.as_view(), name="register"),
     path('get-data/', views.UserGetDataView.as_view(), name='get_data'),
-    path('password-forget/', views.PasswordResetEmailApiView.as_view(), name='password_forget'),
     path('password-reset/', views.PasswordResetApiView.as_view(), name='password_reset'),
 ]
 

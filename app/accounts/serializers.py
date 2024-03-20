@@ -60,7 +60,7 @@ class PasswordSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs['password1'] != attrs['password2']:
             raise serializers.ValidationError(
-                {'password1': _('Parolalar eşleşmiyor.')}
+                {'password1': _('Passwords do not match.')}
             )
         return attrs
 
@@ -96,7 +96,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     def validate_user_permission(self, value):
         if value not in ['member', 'manager']:
             raise serializers.ValidationError(
-               [_('Geçerli yetki seçiniz.')]
+               [_('Please select a valid permission.')]
             )
         return value
 
@@ -132,14 +132,14 @@ class CreateUserSerializer(serializers.ModelSerializer):
     def validate_user_permission(self, value):
         if value not in ['member', 'manager']:
             raise serializers.ValidationError(
-               [_('Geçerli yetki seçiniz.')]
+               [_('Please select a valid permission.')]
             )
         return value
 
     def validate(self, attrs):
         if attrs['password1'] != attrs['password2']:
             raise serializers.ValidationError(
-                [_('Parolalar eşleşmiyor.')]
+                [_('Passwords do not match.')]
             )
         return attrs
 
@@ -194,7 +194,7 @@ class UserPasswordResetSerializer(serializers.Serializer):
     def validate(self, attrs):
         if attrs['password1'] != attrs['password2']:
             raise serializers.ValidationError(
-                {'password1': _('Parolalar eşleşmiyor.')}
+                {'password1': _('Passwords do not match.')}
             )
         return attrs
 

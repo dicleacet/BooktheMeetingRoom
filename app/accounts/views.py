@@ -1,5 +1,3 @@
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status
@@ -75,7 +73,7 @@ class UserViewSet(DestroyModelMixin, ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(
-            {'detail': _('Parola başarıyla güncellendi.')},
+            {'detail': _('Password updated successfully.')},
             status=status.HTTP_200_OK
         )
 
@@ -88,46 +86,6 @@ class UserGetDataView(APIView):
     def get(self, request):
         serializer = self.serializer_class(request.user, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@extend_schema(tags=['Users - Public'], request=serializers.UserPasswordResetEmailSerializer)
-class PasswordResetEmailApiView(APIView):
-    permission_classes = [AllowAny]
-    authentication_classes = []
-
-    @staticmethod
-    def post(request):
-        serializer = serializers.UserPasswordResetEmailSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data.get('email')
-        user = User.objects.filter(email=email).first()
-        if user:
-            reset_code = PasswordResetTokenGenerator().make_token(user)
-            UserPasswordResetCode.objects.update_or_create(
-                user=user,
-                defaults={
-                    'reset_code': reset_code
-                }
-            )
-            reset_url = f"https://istar.com/user/password-reset?token={reset_code}"
-            content = f"""
-            {_('Parolanızı sıfırlamak için aşağıdaki adrese gidiniz.')}
-
-            {reset_url}
-            """
-            send_mail(
-                _('Parola Sıfırlama'),
-                content,
-                _('Parola Sıfırlama {}').format('<noreply@istar.com>'),
-                [email]
-            )
-        return Response(
-            {"detail": _(
-                'İsteğiniz başarıyla alındı, e-posta adresiniz sistemizde kayıtlıysa, '
-                'sıfırlama e-postası alacaksınız. Spam klasörünüzü kontrol etmeyi unutmayınız.'
-            )},
-            status=200
-        )
 
 
 @extend_schema(tags=['Users - Public'], request=serializers.UserPasswordResetSerializer)
@@ -149,12 +107,12 @@ class PasswordResetApiView(APIView):
             user.save()
             reset_code.delete()
             return Response(
-                {"detail": _('Parolanız başarıyla güncellendi, oturum açabilirsiniz.')},
+                {"detail": _('Password reset successful.')},
                 status=200
             )
         return Response(
             {"detail": _(
-                'Parolanız güncellenirken hata oluştu, lütfen tekrar istekte bulunun.'
+                'Password reset token is invalid or expired. Please request a new one.'
             )},
             status=400
         )

@@ -31,7 +31,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             ('member', _('Member')),
         ),
         default='member',
-        help_text=_('User permission group. Superuser can access all of the system. Manager can access only admin panel.')
+        help_text=_('User permission group. '
+                    'Superuser can access all of the system. Manager can access only admin panel.')
     )
     last_login = models.DateTimeField(
         _('Last Login Date'),

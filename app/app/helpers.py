@@ -21,7 +21,7 @@ class DestroyModelMixin:
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ProtectedError:
             return Response(
-                {'detail': _('Silinmek istenen objeye bağlı veriler olduğu için silinemez.')},
+                {'detail': _('Delete operation failed because there are related data to the object.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except Http404:
@@ -30,7 +30,7 @@ class DestroyModelMixin:
     def perform_destroy(self, instance):
         if getattr(instance, 'author'):
             if self.request.user != instance.user:
-                raise serializers.ValidationError({'detail': _('Yetkisiz istek.')})
+                raise serializers.ValidationError({'detail': _('Denied operation.')})
         instance.delete()
 
 
@@ -40,17 +40,17 @@ class DestroyManagerModelMixin:
             instance = self.get_object()
             if request.user == instance:
                 return Response(
-                    {"detail": "Kendinize ait kullanıcıyı silemezsiniz."}, status=status.HTTP_400_BAD_REQUEST
+                    {"detail": "You cannot delete your own account."}, status=status.HTTP_400_BAD_REQUEST
                 )
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ProtectedError:
             return Response(
-                {'detail': _('Silinmek istenen objeye bağlı veriler olduğu için silinemez.')},
+                {'detail': _('Cannot delete because there are related data to the object.')},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except Http404:
-            return Response({"detail": "Bulunamadı."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Not Found"}, status=status.HTTP_404_NOT_FOUND)
 
     def perform_destroy(self, instance):
         instance.delete()

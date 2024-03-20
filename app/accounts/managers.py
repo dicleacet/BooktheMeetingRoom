@@ -9,7 +9,7 @@ class UserManager(BaseUserManager):
         Creates and saves a User with the given username and password.
         """
         if not username:
-            raise ValueError(_('Kullanıcı adı alanı zorunludur.'))
+            raise ValueError(_('Username field is required.'))
 
         user = self.model(
             username=username,
@@ -38,7 +38,7 @@ class UserManager(BaseUserManager):
         Creates and saves a User with the given serializer data.
         """
         if not username:
-            raise ValueError(_('Kullanıcı adı alanı zorunludur.'))
+            raise ValueError(_('Username field is required.'))
 
         user = self.model(
             username=username,

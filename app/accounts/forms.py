@@ -9,8 +9,8 @@ class UserAdminCreationForm(forms.ModelForm):
     A form for creating new users. Includes all the required
     fields, plus a repeated password.
     """
-    password1 = forms.CharField(label=_('Parola'), widget=forms.PasswordInput)
-    password2 = forms.CharField(label=_('Parola Onayı'), widget=forms.PasswordInput)
+    password1 = forms.CharField(label=_('Password'), widget=forms.PasswordInput)
+    password2 = forms.CharField(label=_('Confirm Password'), widget=forms.PasswordInput)
 
     class Meta:
         model = User
@@ -21,7 +21,7 @@ class UserAdminCreationForm(forms.ModelForm):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError(_('Parolalar eşleşmiyor.'))
+            raise forms.ValidationError(_('Passwords do not match'))
         return password2
 
     def save(self, commit=True):
@@ -40,9 +40,9 @@ class UserAdminChangeForm(forms.ModelForm):
     """
 
     password = ReadOnlyPasswordHashField(
-        label=_('Parola'),
-        help_text=_('Parola alanları şifreleyerek saklanır ve görüntülenmez.'
-                    'Değiştirmek için <a style="color: red;" href="../password/">BU ADRESE</a> gidebilirsiniz.')
+        label=_('Password'),
+        help_text=_('Password is not stored in plain text, so there is no way to see the password, '
+                    'but you can change the password using <a href="password/">this link</a>.')
     )
 
     class Meta:
